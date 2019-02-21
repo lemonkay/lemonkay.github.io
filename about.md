@@ -12,4 +12,4 @@ permalink: /about/
 
 ### Contact me
 
-[email@domain.com](reflex.xyj@gmail.com)
+[reflex.xyj@gmail.com](reflex.xyj@gmail.com)
