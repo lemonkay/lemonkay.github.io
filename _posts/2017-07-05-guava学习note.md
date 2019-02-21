@@ -3,16 +3,9 @@
     title: guava学习note
 ---
 
-
-
-{{ page.title }}
-===============
-
-
-#### Joiner 06-28
+## Joiner 06-28
  
- 
- 1.用设置的text代替null，重写本方法防止重复调用
+1. 用设置的text代替null，重写本方法防止重复调用
 
 ``` java
  public Joiner useForNull(final String nullText) {
@@ -36,7 +29,7 @@
     };
   }
 ``` 
-2.重写size和get方法，将一个数组和两个object拼接成了一个Iterable，避免了Iterable的创建
+2. 重写size和get方法，将一个数组和两个object拼接成了一个Iterable，避免了Iterable的创建
 
 ```java
 private static Iterable<Object> iterable(
@@ -63,7 +56,7 @@ private static Iterable<Object> iterable(
   }   
 ``` 
 
-#### spliter  06-29
+## spliter  06-29
 1. 策略模式的使用
 
 2. **continue and break label** ：到label出继续循环 或者是跳出label处的循环
