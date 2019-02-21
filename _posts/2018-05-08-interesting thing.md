@@ -3,8 +3,6 @@
 　　title: something interesting
 ---
 
-# something interesting
-
 ### 1. fastJson 序列化问题
 
 - 问题描述及原因：

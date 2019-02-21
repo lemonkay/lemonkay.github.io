@@ -1,8 +1,9 @@
+---
+    layout: post
+    title: 关于java方法参数是  Pass By Value or Pass By Reference？
+---
 
-## 关于java方法参数是  Pass By Value or Pass By Reference？
-
-<br/>
-#### 起因，当然show code啦 ： ##
+### 起因，当然show code啦 ： ##
 ```java
 public class MethodTest {
 

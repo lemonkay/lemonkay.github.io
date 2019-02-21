@@ -3,8 +3,6 @@
     title: ElasticSearch你该知道的一些
 ---
 
-# ElasticSearch
-
 ## 1.什么是es
 Elasticsearch is a distributed RESTful search engine built for the cloud. Features include:
 
