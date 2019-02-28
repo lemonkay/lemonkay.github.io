@@ -81,14 +81,33 @@
         * 等待数据准备好
         * 从内核向进程复制数据  
 
-        对于一个套接字上的输入操作，第一步通常涉及等待数据从网络中到达。    分组到达时，它被复制到内核中的某个缓冲区。第二步就是把数据从内核    制到应用进程缓冲区。
+        对于一个套接字上的输入操作，第一步通常涉及等待数据从网络中到达。分组到达时，它被复制到内核中的某个缓冲区。第二步就是把数据从内核复制制到应用进程缓冲区。
 
     - Unix 下有五种 I/O 模型：
        * 阻塞式 I/O
        * 非阻塞式 I/O
-       * I/O 复用（select 和 poll）
+       * I/O 复用（select 和 epoll，select（）这个内核调用是堵塞的）
        * 信号驱动式 I/O（SIGIO）
        * 异步 I/O（AIO）
 
     - 前四种 I/O 模型的主要区别在于第一个阶段，而第二个阶段是一样的：将数据从内核复制到应用进程过程中，应用进程会被阻塞。
     ![i/o](/images/unix_i:o.png)
+
+    - syn and asyn：一个 i/o 操作中在请求返回前不会堵塞 就是 异步；
+    - 按这种定义，只有第五种AIO才是异步i/o
+
+3. java中 BIO,NIO,AIO
+    - BIO:面向stream的blocked i/o
+    - NIO: 是上面的 i/o多路复用模型，虽然selector.select()是堵塞的，但是在eventLoop中将准备好的数据放入到了 buffer中，这样面对buffer而言就是非堵塞的
+    - AIO: 不知道是不是上面的AIO,netty中还是以NIO为主
+
+4. kafka的网络层
+    - 网络层相当于一个 NIO 服务，在java NIO 上简单封装
+    - a non-user-space writing of bytes use FileChannel.transferTo.  FileChannel就是建立文件数据与用户空间的内存映射，省略了数据从内核->用户空间的这一步。 sendfile(零拷贝) 的实现是通过 MessageSet 接口的 writeTo 方法完成的.这样的机制允许 file-backed 集使用更高效的 transferTo 实现,而不在使用进程内的写缓存.
+    - 线程模型： 线程模型是一个单独的接受线程和 N 个处理线程,每个线程处理固定数量的连接. 就是Reactor模型
+
+5. netty的i/o封装
+
+
+6. 一些引用：
+    - > [Doug Lea 的nio](../file/nio.pdf)（有Reactor 模型的介绍）
