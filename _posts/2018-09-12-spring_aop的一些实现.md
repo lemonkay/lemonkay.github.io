@@ -45,20 +45,22 @@
 
 ## spring bean 实例化
 
-  - AbstractApplicationContext#refresh->finishBeanFactoryInitialization()->   DefaultListableBeanFactory#preInstantiateSingletons-> AbstractBeanFactory#doGetBean-> AbstractAutowireCapableBeanFactory#createBean
-  - instance的策略默认是cglib的  
-  ```java
+  - AbstractApplicationContext#refresh->finishBeanFactoryInitialization()->   DefaultListableBeanFactory#preInstantiateSingletons-> AbstractBeanFactory#doGetBean-> AbstractAutowireCapableBeanFactory#createBean  
+
+  - instance的策略默认是cglib的   
+  ```java  
     public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
 
 	/** Strategy for creating bean instances */
-	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();}
 
   ```
 
   - CglibSubclassingInstantiationStrategy,createEnhancedSubclass有cglib代理生成proxy class  
 
   ```java  
+
   public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy;
 
   SimpleInstantiationStrategy
@@ -96,9 +98,8 @@
 			// Must generate CGLIB subclass.
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
-	}
-
-	```
+	}  
+  ```
 
 
 ## spring aop的bean织入
