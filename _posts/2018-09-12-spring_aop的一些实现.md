@@ -10,18 +10,21 @@
 
   - Spring 只是使用了与 AspectJ 5 一样的注解，但仍然没有使用 AspectJ 的编译器，底层依是动态代理技术的实现，因此并不依赖于 AspectJ 的编译器
 
-  - spring AOP的实现原理是基于动态织入的动态代理技术:Java JDK动态代理和CGLIB动态代理，前者是基于反射技术的实现，后者是基于继承的机制实现
-    * jdk动态代理:dubbo中JdkProxyFactory#getProxy
-    ```java
-     @Override
+  - spring AOP的实现原理是基于动态织入的动态代理技术:Java JDK动态代理和CGLIB动态代理，前者是基于反射技术的实现，后者是基于继承的机制实现  
+
+    * jdk动态代理:dubbo中JdkProxyFactory#getProxy  
+
+    ```java  
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
         return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, new InvokerInvocationHandler(invoker));
     }
-    
     ```
-    * cglib：spring中CglibSubclassingInstantiationStrategy#createEnhancedSubclass
-    ```java
+
+    * cglib：spring中CglibSubclassingInstantiationStrategy#createEnhancedSubclass    
+
+    ```java  
      /**
 		 * Create an enhanced subclass of the bean class for the provided bean
 		 * definition, using CGLIB.
@@ -38,14 +41,12 @@
 			enhancer.setCallbackTypes(CALLBACK_TYPES);
 			return enhancer.createClass();
 		}
-  
-    
     ```
 
 ## spring bean 实例化
 
-  - AbstractApplicationContext#refresh->finishBeanFactoryInitialization()->DefaultListableBeanFactory#preInstantiateSingletons->AbstractBeanFactory#doGetBean->AbstractAutowireCapableBeanFactory#createBean
-  - instance的策略默认是cglib的
+  - AbstractApplicationContext#refresh->finishBeanFactoryInitialization()->   DefaultListableBeanFactory#preInstantiateSingletons-> AbstractBeanFactory#doGetBean-> AbstractAutowireCapableBeanFactory#createBean
+  - instance的策略默认是cglib的  
   ```java
     public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
@@ -55,11 +56,12 @@
 
   ```
 
-  - CglibSubclassingInstantiationStrategy,createEnhancedSubclass有cglib代理生成proxy class
-  ```java
-    public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy;
+  - CglibSubclassingInstantiationStrategy,createEnhancedSubclass有cglib代理生成proxy class  
 
-    SimpleInstantiationStrategy
+  ```java  
+  public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy;
+
+  SimpleInstantiationStrategy
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		// Don't override the class with CGLIB if no overrides.
@@ -96,8 +98,7 @@
 		}
 	}
 
-
-  ```
+	```
 
 
 ## spring aop的bean织入
