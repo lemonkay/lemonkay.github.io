@@ -48,13 +48,13 @@
   - AbstractApplicationContext#refresh->finishBeanFactoryInitialization()->   DefaultListableBeanFactory#preInstantiateSingletons-> AbstractBeanFactory#doGetBean-> AbstractAutowireCapableBeanFactory#createBean  
 
   - instance的策略默认是cglib的   
-  ```java  
+  ```java   
     public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
 
-	/** Strategy for creating bean instances */
-	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();}
-
+		/** Strategy for creating bean instances */
+		private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+		}  
   ```
 
   - CglibSubclassingInstantiationStrategy,createEnhancedSubclass有cglib代理生成proxy class  
