@@ -5,7 +5,8 @@
 
 ## emacs
 - [fork的emacs配置](https://github.com/lisp2c/emacs.d)
-- 官方指南：C-h t 吧
+- 官方指南：C-h t 吧,[中文快速指南](../file/TUTORIAL.cn)
+- 在emacs slime中: 换行键 C-j 
 
 ## lisp
 - lisp可以认为是函数抽象和语义抽象的。lisp的语法很像AST(抽象语法树)
