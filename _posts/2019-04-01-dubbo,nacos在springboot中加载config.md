@@ -13,6 +13,7 @@
 ## dubbo
 - dubbo-spring-boot-autoconfigure.jar  
     ```java
+    
     /**
     * The lowest precedence {@link EnvironmentPostProcessor} processes
     * {@link SpringApplication#setDefaultProperties(Properties) Spring Boot default properties} for Dubbo
@@ -91,7 +92,7 @@
         }
     }
     ```
-- nacos config: tomcatServletWebServerFactory 这个bean init引起的
+- nacos-config: tomcatServletWebServerFactory 这个bean init引起的
     * 执行链路：
         ```java
         "main@1" prio=5 tid=0x1 nid=NA runnable
@@ -135,4 +136,3 @@
             }
 
         ```
-v
