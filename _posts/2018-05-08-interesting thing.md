@@ -90,7 +90,7 @@ Caused by: java.lang.IllegalArgumentException: argument type mismatch
   - 普通内部类默认  持有外部类的一个引用，但在外部类的 static 方法中进行 json 序列化为内部类， 内部类  实  例化时  获取不到外部类引用，实例化失败，就 gg 了
   - 内部类设置为静态内部类，static
 
-### 6.java lamda
+### 6.java lambda
 
 - 可变长参数为 5，第 6 个 lambda invokeDynamic 推断不出类型
 - vavr Api.Match.of
