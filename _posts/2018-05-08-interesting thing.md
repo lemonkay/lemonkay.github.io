@@ -1,6 +1,6 @@
 ---
-　　layout: default
-　　title: something interesting
+    layout: post
+　　 title: something interesting
 ---
 
 ### 1. fastJson 序列化问题

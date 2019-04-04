@@ -3,6 +3,16 @@
     title: dubbo,nacos在springboot中加载配置
 ---
 
+## spring-boot 
+- > primary goals:
+    * Provide a radically faster and widely accessible getting started experience for all Spring development
+
+    * Be opinionated out of the box, but get out of the way quickly as requirements start to diverge from the defaults
+
+    * Provide a range of non-functional features that are common to large classes of projects (e.g. embedded servers, security, metrics, health checks, externalized configuration)
+
+    * Absolutely no code generation and no requirement for XML configuration
+    
 
 ## spring-boot starter
 - 一个完整的Spring Boot starter可能包含以下组件：
@@ -131,20 +141,12 @@
                         return result;
                     }
                     result = current;
-                }
+                }v
                 return result;
             }
 
         ```
 
 
-## spring-boot 
-- > primary goals:
-    * Provide a radically faster and widely accessible getting started experience for all Spring development
 
-    * Be opinionated out of the box, but get out of the way quickly as requirements start to diverge from the defaults
-
-    * Provide a range of non-functional features that are common to large classes of projects (e.g. embedded servers, security, metrics, health checks, externalized configuration)
-
-    * Absolutely no code generation and no requirement for XML configuration
 

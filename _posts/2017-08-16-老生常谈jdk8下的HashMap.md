@@ -1,6 +1,6 @@
 ---
-　　layout: default
-　　title: 老生常谈jdk8下的HashMap
+    layout: post
+    title: 老生常谈jdk8下的HashMap
 ---
 
 1. > [美团的一篇文章](https://tech.meituan.com/java_hashmap.html)

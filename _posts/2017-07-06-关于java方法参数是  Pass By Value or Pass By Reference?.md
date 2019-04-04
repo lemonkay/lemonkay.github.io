@@ -181,23 +181,24 @@ public class MethodTest {
 
 #### 3. **回到最初的问题**
 1. main 方法中的变量 a的值为什么没变？
-2. 因为在main方法等 局部变量表中的a  一直引用堆中 value（还是final）是1的对象。
-而传给方法 addNum()
 
+2. 因为在main方法等 局部变量表中的a  一直引用堆中 value（还是final）是1的对象。而传给方法 addNum()
+  
      ```java
      9: aload_1
      10: invokestatic  #4                  // Method addNum:(Ljava/lang/Integer;)V
      
      ```
-      ![aload](/images/aload.png)  
-    是将 main 栈帧中 局部变量表的第一个slot的a推至操作栈顶，执行addNum()栈帧时，看字节码 是new Integer(2) 后直接将栈顶引用值赋给b；
+    - ![aload](../images/aload.png)  
+
+    - 是将 main 栈帧中 局部变量表的第一个slot的a推至操作栈顶，执行addNum()栈帧时，看字节码 是new Integer(2) 后直接将栈顶引用值赋给b；
     
- ```java
-         5: invokespecial #3                  // Method java/lang/Integer."<init>":(I)V
-         8: astore_0
-     
-  ```
-![astore](/images/astore.png)  
+    ```java
+            5: invokespecial #3                  // Method java/lang/Integer."<init>":(I)V
+            8: astore_0
+        
+      ```
+    - ![astore](../images/astore.png)  
 
 
 3. **java说到底还是 Pass By Value，只不过对于引用类型来说，value是堆中对象的地址；就是方法中的参数变量 是通过操作栈来传递的.**
