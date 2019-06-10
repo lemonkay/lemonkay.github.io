@@ -32,3 +32,5 @@
 - [wiki的描述](https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95)
 
 
+##raft算法
+- 论文地址：[raft](../file/raft.pdf)
