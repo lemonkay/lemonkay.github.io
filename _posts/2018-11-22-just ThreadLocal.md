@@ -36,6 +36,29 @@
 
 ## 3. 其它
 - InheritableThreadLocal：  
-    This class extends <tt>ThreadLocal</tt> to provide inheritance of value from parent thread to child thread
+    * This class extends <tt>ThreadLocal</tt> to provide inheritance of value from parent thread to child thread
 
-- 
+- netty中FastThreadLocal
+    * 用 **Object[] indexedVariables** 代替了原先Thread.ThreadLocalMap的hash table，并且没有了key 弱引用的设定。
+
+    * FastThreadLocal的index是一个static的AtomicInteger,是在new FastThreadLocal()中递增的。
+
+    * InternalThreadLocalMap ，在FastThreadLocalThread（extend Thread）这个fast线程中是一个成员变量 ;如果是Thread,就在ThreadLocal中放了InternalThreadLocalMap
+
+    * get()方法   
+      
+    ```java
+    /**
+     * Returns the current value for the current thread
+     */
+    @SuppressWarnings("unchecked")
+    public final V get() {
+        InternalThreadLocalMap threadLocalMap = InternalThreadLocalMap.get();
+        Object v = threadLocalMap.indexedVariable(index);
+        if (v != InternalThreadLocalMap.UNSET) {
+            return (V) v;
+        }
+
+        return initialize(threadLocalMap);
+    } 
+    ```
