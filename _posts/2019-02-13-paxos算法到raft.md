@@ -1,6 +1,6 @@
 ---
     layout: post
-    title: Paxos
+    title: Paxos算法到Raft
 ---
 
 ## paxos算法
@@ -32,7 +32,7 @@
 - [wiki的描述](https://zh.wikipedia.org/wiki/Paxos%E7%AE%97%E6%B3%95)
 
 
-##raft算法
+## raft算法
 - 论文地址：[raft](../file/raft.pdf)
 
 - raft的一些应用：
@@ -41,6 +41,6 @@
     * nacos-naming，多服务也有raft的实现，**@see RaftConsistencyServiceImpl**
 
 
-##其它衍生
+## 其它衍生
 - zookeeper 的zab
 - kafka isr的多数选举
