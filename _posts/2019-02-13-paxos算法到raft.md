@@ -34,3 +34,13 @@
 
 ##raft算法
 - 论文地址：[raft](../file/raft.pdf)
+
+- raft的一些应用：
+    * redis sentinel和cluster都是基于raft的leader election。
+
+    * nacos-naming，多服务也有raft的实现，**@see RaftConsistencyServiceImpl**
+
+
+##其它衍生
+- zookeeper 的zab
+- kafka isr的多数选举
