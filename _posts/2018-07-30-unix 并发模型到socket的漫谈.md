@@ -11,34 +11,36 @@
     - 基于进程的，fork 一个子进程
 
       ```c
-          int main(int argc, char **argv)
-          {
-              int listenfd, connfd, port;
-              socklen_t clientlen=sizeof(struct sockaddr_in);
-              struct sockaddr_in clientaddr;
-              if (argc != 2) {
-              fprintf(stderr, "usage: %s <port>\n", argv[0]);
-              exit(0);
-              }
-              port = atoi(argv[1]);
-              Signal(SIGCHLD, sigchld_handler);
-              listenfd = Open_listenfd(port);
-              while (1) {
-              connfd = Accept(listenfd, (SA *) &clientaddr, &clientlen);
-              if (Fork() == 0) {
-                  Close(listenfd); /* Child closes its listening socket */
-                  echo(connfd);    /* Child services client */ //line:conc:echoserverp:echofun
-                  Close(connfd);   /* Child closes connection with client */ //line:conc:echoserverp:childclose
-                  exit(0);         /* Child exits */
-              }
-              Close(connfd); /* Parent closes connected socket (important!) */ //line:conc:echoserverp:parentclose
-              }
-          }
+        //echoserverp.c
+        int main(int argc, char **argv)
+        {
+            int listenfd, connfd, port;
+            socklen_t clientlen=sizeof(struct sockaddr_in);
+            struct sockaddr_in clientaddr;
+            if (argc != 2) {
+            fprintf(stderr, "usage: %s <port>\n", argv[0]);
+            exit(0);
+            }
+            port = atoi(argv[1]);
+            Signal(SIGCHLD, sigchld_handler);
+            listenfd = Open_listenfd(port);
+            while (1) {
+            connfd = Accept(listenfd, (SA *) &clientaddr, &clientlen);
+            if (Fork() == 0) {
+                Close(listenfd); /* Child closes its listening socket */
+                echo(connfd);    /* Child services client */ //line:conc:echoserverp:echofun
+                Close(connfd);   /* Child closes connection with client */ //line:conc:echoserverp:childclose
+                exit(0);         /* Child exits */
+            }
+            Close(connfd); /* Parent closes connected socket (important!) */ //line:conc:echoserverp:parentclose
+            }
+        }
       ```
 
     * 一个进程中 i/o 多路复用 
 
       ```c
+      //echoservers.c
       int main(int argc, char **argv)
       {
           int listenfd, connfd, port;
@@ -97,8 +99,63 @@
     - 按这种定义，只有第五种AIO才是异步i/o
 
 3. java中 BIO,NIO,AIO
+
     - BIO:面向stream的blocked i/o
     - NIO: 是上面的 i/o多路复用模型，虽然selector.select()是堵塞的，但是在eventLoop中将准备好的数据放入到了 buffer中，这样面对buffer而言就是非堵塞的
+        * nio PlainNioServer
+        ```java
+        public class PlainNioServerTest {
+            public void serve(int port) throws IOException{
+                ServerSocketChannel serverChannel = ServerSocketChannel.open();
+                serverChannel.configureBlocking(false);
+                ServerSocket serverSocket = serverChannel.socket();
+                serverSocket.bind(new InetSocketAddress(port));
+                Selector selector = Selector.open();
+                serverChannel.register(selector, SelectionKey.OP_ACCEPT);
+                final ByteBuffer msg = ByteBuffer.wrap("Hi,\r\n".getBytes());
+                for (;;){
+                    try {
+                        selector.select();
+                    } catch (IOException e) {
+                        break;
+                    }
+                    Set<SelectionKey> readyKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> iterator = readyKeys.iterator();
+                    while (iterator.hasNext()) {
+                        SelectionKey key = iterator.next();
+                        iterator.remove();
+                        try {
+                            if (key.isAcceptable()) {
+                                ServerSocketChannel server = (ServerSocketChannel) key.channel();
+                                SocketChannel client = server.accept();
+                                client.configureBlocking(false);
+                                client.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ, msg);
+                            }
+
+                            if (key.isWritable()) {
+                                SocketChannel client = (SocketChannel) key.channel();
+                                ByteBuffer buffer =(ByteBuffer) key.attachment();
+                                while (buffer.hasRemaining()) {
+                                    if (client.write(buffer) == 0) {
+                                        break;
+
+                                    }
+                                }
+                                client.close();
+
+                            }
+                        } catch (IOException e) {
+                            key.cancel();
+                            key.channel().close();
+                        }
+
+
+                    }
+                }
+            }
+
+        } 
+        ```
     - AIO: 不知道是不是上面的AIO,netty中还是以NIO为主
 
 4. kafka的网络层

@@ -104,9 +104,34 @@
 
 
 ## spring aop的bean织入
-   - AbstractAutowireCapableBeanFactory#initializeBean
+   - AbstractAutowireCapableBeanFactory#initializeBean ->#applyBeanPostProcessorsAfterInitialization()
+
+   - AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyCreator#postProcessAfterInitialization()
+
+   - AbstractAutoProxyCreator#wrapIfNecessary->#createProxy()
+
+   
 
 
 ## spring aop自调用问题
    - spring容器中管理的是经过aop织入的代理对象，注入使用时调用对象方法，aop自然生效
    - bean内部方法调用，this.some(),this自然不会是代理对象(能不能注入this的代理对象或者直接直接从容器中取？这样应该就能解决这个自调用了)
+   - 一些方法：
+		* AopContext.currentProxy()
+		* @PostConstruct  ApplicationContext.getBean()
+		* BeanPostProcessor set Proxy
+
+
+
+
+## spring bean生命周期
+* BeanPostProcessor#postProcessBeforeInitialization(),#postProcessAfterInitialization() difference?
+	* spring bean lifecycle 
+		- BeanDefinition 
+		- BeanFactoryPostProcessor.postProcessBeanFactory()
+		- instantiate
+		- populate properties
+		- BeanPostProcessor.postProcessBeforeInitialization() 
+		- @PostConstruct(JSR-250)
+		- InitializingBean.afterPropertiesSet()
+		- BeanPostProcessor.postProcessAfterInitialization
