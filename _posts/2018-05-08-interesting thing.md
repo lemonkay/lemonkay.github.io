@@ -68,8 +68,6 @@
 
 ### 5. 内部类 json 序列化失败问题
 
--
-
 ```java
 JSON.parseArray(gradeConfigJson,CustomzerGradeConfig.class);
 ```
@@ -130,3 +128,24 @@ Caused by: java.lang.IllegalArgumentException: argument type mismatch
                   throw new RuntimeException("推断类型不符合下限");
               })
   ```
+
+### 7.tomcat7与一些jar不兼容问题
+- 问题描述：升级了jackson（2.10.2） and lombok（1.16.22）的依赖，tomcat启动报错
+```java
+SEVERE: Unable to process Jar entry [module-info.class] from Jar [jar:file:/home/ewallet/risk-feature/risk-feature-
+devjd/default/webroot/WEB-INF/lib/lombok-1.16.22.jar!/] for annotations
+org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in constant pool: 19
+        at org.apache.tomcat.util.bcel.classfile.Constant.readConstant(Constant.java:136)
+```
+
+- 原因：tomcat7会用 bcel这个字节码包去scan 加载的jars，然后有的jar中会有 module-info.class（java9模块化使用），readConstant不兼容
+  * 使用JDK9创建模块打包后有一个module-info.class的类其中常量结构可能有19 - CONSTANT_Module and  20 - CONSTANT_Package两种
+  
+  * [tomcat bug链接](https://bz.apache.org/bugzilla/show_bug.cgi?id=60688)，tomcat8.5以后解决了
+
+  * tomcat scan这些jars的作用，可以看 [how to](https://cwiki.apache.org/confluence/display/TOMCAT/HowTo+FasterStartUp),除了tomcat自身jar，主要是为了扫第三方包中tomcat相关Annotations
+
+- 解决方法：
+  * 升级tomcat到8.5及以后
+
+  * 在 *tomcat/conf/catalina.properties* 的配置中，追加tomcat.util.scan.DefaultJarScanner.jarsToSkip的不扫描jar

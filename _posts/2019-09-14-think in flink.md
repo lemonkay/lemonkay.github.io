@@ -19,6 +19,7 @@
     *  result.writeAsText("～/logs/flink/wiki.txt").setParallelism(1);
     *  说到底还是Parallelism的问题，sink也能并行输出结果的，operator Parallelism > sink Parallelism, 是不是就要merge了？
 
+- flink的时间窗口如果是长时间的，比如过去一年，state会存储窗口里所有数据吗？
 
 ## 3. 源码的阅读
 
