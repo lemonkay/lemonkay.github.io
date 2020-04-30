@@ -8,6 +8,7 @@
 - 用AsyncSupply包装了提交supply，默认用ForkJoinPool.commonPool()
 
 - f.get() 运行用户的supply，异常的话completeThrowable 设置result为AltResult()，d.postComplete();去触发之前whenComplete,thenApply等stack中的
+
 ```java
 @SuppressWarnings("serial")
     static final class AsyncSupply<T> extends ForkJoinTask<Void>
@@ -39,6 +40,7 @@
 ```
 
 - 这个stack是一个abstract Completion，其实就是whenComplete,thenApply ...等操作组装的stage，然后tryFire()进行链式的调用  
+
 ```java
 /**
  * Pops and tries to trigger all reachable dependents.  Call only
@@ -71,6 +73,7 @@ final void postComplete() {
 
 ## 2.CompletableFuture.get()
 - 主要对result的while()判断，超时和中断的处理封装了Signaller
+
 ```java
 /**
  * Returns raw result after waiting, or null if interrupted, or
@@ -112,4 +115,5 @@ private Object timedGet(long nanos) throws TimeoutException {
     return r;
 }
 ```
+
 
