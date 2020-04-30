@@ -38,7 +38,7 @@
     }
 ```
 
-- 这个stack是一个abstract Completion，其实就是whenComplete,thenApply ...等操作组装的stage，然后tryFire()进行链式的调用
+- 这个stack是一个abstract Completion，其实就是whenComplete,thenApply ...等操作组装的stage，然后tryFire()进行链式的调用  
 ```java
 /**
  * Pops and tries to trigger all reachable dependents.  Call only
@@ -70,7 +70,7 @@ final void postComplete() {
 
 
 ## 2.CompletableFuture.get()
-- 主要对result的while()判断，超时和中断的处理封装了Signaller q
+- 主要对result的while()判断，超时和中断的处理封装了Signaller
 ```java
 /**
  * Returns raw result after waiting, or null if interrupted, or
