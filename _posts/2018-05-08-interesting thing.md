@@ -149,3 +149,7 @@ org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in 
   * 升级tomcat到8.5及以后
 
   * 在 *tomcat/conf/catalina.properties* 的配置中，追加tomcat.util.scan.DefaultJarScanner.jarsToSkip的不扫描jar
+
+
+### 8. java8 Collectors.toMap会npe
+- [so连接](https://stackoverflow.com/questions/24630963/java-8-nullpointerexception-in-collectors-tomap)

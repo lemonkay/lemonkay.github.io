@@ -40,6 +40,11 @@
 
     * nacos-naming，多服务也有raft的实现，**@see RaftConsistencyServiceImpl**
 
+    * neo4j的因果集群模式，core server
+
+- [raft协议](https://raft.github.io/)
+
+
 
 ## 其它衍生
 - zookeeper 的zab
