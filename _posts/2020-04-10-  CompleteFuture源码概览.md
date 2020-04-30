@@ -41,32 +41,31 @@
 - 这个stack是一个abstract Completion，其实就是whenComplete,thenApply ...等操作组装的stage，然后tryFire()进行链式的调用
 ```java
 /**
-     * Pops and tries to trigger all reachable dependents.  Call only
-     * when known to be done.
+ * Pops and tries to trigger all reachable dependents.  Call only
+ * when known to be done.
+ */
+final void postComplete() {
+    /*
+     * On each step, variable f holds current dependents to pop
+     * and run.  It is extended along only one path at a time,
+     * pushing others to avoid unbounded recursion.
      */
-    final void postComplete() {
-        /*
-         * On each step, variable f holds current dependents to pop
-         * and run.  It is extended along only one path at a time,
-         * pushing others to avoid unbounded recursion.
-         */
-        CompletableFuture<?> f = this; Completion h;
-        while ((h = f.stack) != null ||
-               (f != this && (h = (f = this).stack) != null)) {
-            CompletableFuture<?> d; Completion t;
-            if (f.casStack(h, t = h.next)) {
-                if (t != null) {
-                    if (f != this) {
-                        pushStack(h);
-                        continue;
-                    }
-                    h.next = null;    // detach
+    CompletableFuture<?> f = this; Completion h;
+    while ((h = f.stack) != null ||
+           (f != this && (h = (f = this).stack) != null)) {
+        CompletableFuture<?> d; Completion t;
+        if (f.casStack(h, t = h.next)) {
+            if (t != null) {
+                if (f != this) {
+                    pushStack(h);
+                    continue;
                 }
-                f = (d = h.tryFire(NESTED)) == null ? this : d;
+                h.next = null;    // detach
             }
+            f = (d = h.tryFire(NESTED)) == null ? this : d;
         }
     }
-
+}
 ```
 
 
@@ -74,43 +73,43 @@
 - 主要对result的while()判断，超时和中断的处理封装了Signaller q
 ```java
 /**
-     * Returns raw result after waiting, or null if interrupted, or
-     * throws TimeoutException on timeout.
-     */
-    private Object timedGet(long nanos) throws TimeoutException {
-        if (Thread.interrupted())
-            return null;
-        if (nanos <= 0L)
+ * Returns raw result after waiting, or null if interrupted, or
+ * throws TimeoutException on timeout.
+ */
+private Object timedGet(long nanos) throws TimeoutException {
+    if (Thread.interrupted())
+        return null;
+    if (nanos <= 0L)
+        throw new TimeoutException();
+    long d = System.nanoTime() + nanos;
+    Signaller q = new Signaller(true, nanos, d == 0L ? 1L : d); // avoid 0
+    boolean queued = false;
+    Object r;
+    // We intentionally don't spin here (as waitingGet does) because
+    // the call to nanoTime() above acts much like a spin.
+    while ((r = result) == null) {
+        if (!queued)
+            queued = tryPushStack(q);
+        else if (q.interruptControl < 0 || q.nanos <= 0L) {
+            q.thread = null;
+            cleanStack();
+            if (q.interruptControl < 0)
+                return null;
             throw new TimeoutException();
-        long d = System.nanoTime() + nanos;
-        Signaller q = new Signaller(true, nanos, d == 0L ? 1L : d); // avoid 0
-        boolean queued = false;
-        Object r;
-        // We intentionally don't spin here (as waitingGet does) because
-        // the call to nanoTime() above acts much like a spin.
-        while ((r = result) == null) {
-            if (!queued)
-                queued = tryPushStack(q);
-            else if (q.interruptControl < 0 || q.nanos <= 0L) {
-                q.thread = null;
-                cleanStack();
-                if (q.interruptControl < 0)
-                    return null;
-                throw new TimeoutException();
-            }
-            else if (q.thread != null && result == null) {
-                try {
-                    ForkJoinPool.managedBlock(q);
-                } catch (InterruptedException ie) {
-                    q.interruptControl = -1;
-                }
+        }
+        else if (q.thread != null && result == null) {
+            try {
+                ForkJoinPool.managedBlock(q);
+            } catch (InterruptedException ie) {
+                q.interruptControl = -1;
             }
         }
-        if (q.interruptControl < 0)
-            r = null;
-        q.thread = null;
-        postComplete();
-        return r;
     }
+    if (q.interruptControl < 0)
+        r = null;
+    q.thread = null;
+    postComplete();
+    return r;
+}
 ```
 
