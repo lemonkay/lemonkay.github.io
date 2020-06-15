@@ -9,7 +9,8 @@ permalink: /about/
 ### More Information
 
 会点java，也能python，c写hello world，学习lisp入教中.
+又点歪了大数据相关的技能点
 
 ### Contact me
 
-[reflex.xyj@gmail.com](reflex.xyj@gmail.com)
+[kohala.xu@gmail.com](kohala.xu@gmail.com)
