@@ -140,3 +140,5 @@
 
     * Flink 中的执行图可以分成四层：StreamGraph -> JobGraph -> ExecutionGraph -> 物理执行图。
     ![SocketTextStreamWordCount example](../images/flink_dag_execute.png)
+
+
