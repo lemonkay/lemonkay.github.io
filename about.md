@@ -8,9 +8,10 @@ permalink: /about/
 
 ### More Information
 
-会点java，也能python，c写hello world，学习lisp入教中.
-又点歪了大数据相关的技能点
+- 会点java，也能python，c,go写hello world，学习lisp入教中,又点歪了大数据相关的技能点
+
+- 在书本学习和工程实践中相得益彰，受益良多。keep coding to change something。
 
 ### Contact me
 
-[kohala.xu@gmail.com](kohala.xu@gmail.com)
+[kohala.xu@gmail.com](kohala.xu@gmail.com) 

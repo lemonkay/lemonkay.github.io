@@ -22,7 +22,7 @@
                 return new HystrixCommandAspect();
              }
         }
-        
+ 
        ```
 
     - 代码式的配置设置，可以动态地从其它配置服务设置（diamond，nacos等）
@@ -238,3 +238,63 @@
 
 
 
+
+## sentinel的熔断降级
+- 业务代码是写在SphU.entry()后面的,出现bizException,用Tracer.trace(t)去记录的
+    ```java
+    Entry entry = null;
+    try {
+    entry = SphU.entry(key, EntryType.IN, key);
+    // Write your biz code here.
+    // <<BIZ CODE>>
+    } catch (Throwable t) {
+    if (!BlockException.isBlockException(t)) {
+        Tracer.trace(t);
+    }
+    } finally {
+    if (entry != null) {
+        entry.exit();
+    }
+    }
+    ```
+
+- sentinelResourceAnnotation的实现,handleBlockException未设置blockHandler(),最终都会走fallback()
+    ```java
+    @Around("sentinelResourceAnnotationPointcut()")
+    public Object invokeResourceWithSentinel(ProceedingJoinPoint pjp) throws Throwable {
+        Method originMethod = resolveMethod(pjp);
+
+        SentinelResource annotation = originMethod.getAnnotation(SentinelResource.class);
+        if (annotation == null) {
+            // Should not go through here.
+            throw new IllegalStateException("Wrong state for SentinelResource annotation");
+        }
+        String resourceName = getResourceName(annotation.value(), originMethod);
+        EntryType entryType = annotation.entryType();
+        int resourceType = annotation.resourceType();
+        Entry entry = null;
+        try {
+            entry = SphU.entry(resourceName, resourceType, entryType, pjp.getArgs());
+            return pjp.proceed();
+        } catch (BlockException ex) {
+            return handleBlockException(pjp, annotation, ex);
+        } catch (Throwable ex) {
+            Class<? extends Throwable>[] exceptionsToIgnore = annotation.exceptionsToIgnore();
+            // The ignore list will be checked first.
+            if (exceptionsToIgnore.length > 0 && exceptionBelongsTo(ex, exceptionsToIgnore)) {
+                throw ex;
+            }
+            if (exceptionBelongsTo(ex, annotation.exceptionsToTrace())) {
+                traceException(ex);
+                return handleFallback(pjp, annotation, ex);
+            }
+
+            // No fallback function can handle the exception, so throw it out.
+            throw ex;
+        } finally {
+            if (entry != null) {
+                entry.exit(1, pjp.getArgs());
+            }
+        }
+    }
+    ```

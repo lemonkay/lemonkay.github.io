@@ -22,7 +22,6 @@
 - flink的时间窗口如果是长时间的，比如过去一年，state会存储窗口里所有数据吗？
 
 ## 3. 源码的阅读
-
 - flink的backpressure实现
     * ![flink_buffer](../images/flink_bufferpool.png)
 
@@ -142,3 +141,29 @@
     ![SocketTextStreamWordCount example](../images/flink_dag_execute.png)
 
 
+
+
+## 4. flink的窗口实现
+- [官方blog](https://flink.apache.org/news/2015/12/04/Introducing-windows.html)
+- 先来分析 ***ProcessingTimeTrigger***这个类的吧，之前看源码，一直有个很疑惑的地方没，timeout的window什么时候PURGE的，然后发现没有在**ProcessingTimeTrigger.onProcessingTime** 中clear，在 **WindowOperator.onProcessingTime** 中。   
+``` java
+if (triggerResult.isFire()) {
+			ACC contents = windowState.get();
+			if (contents != null) {
+				emitWindowContents(triggerContext.window, contents);
+			}
+		}
+
+		if (triggerResult.isPurge()) {
+			windowState.clear();
+		}
+		//这块统一做了clearAllState
+		if (!windowAssigner.isEventTime() && isCleanupTime(triggerContext.window, timer.getTimestamp())) {
+			clearAllState(triggerContext.window, windowState, mergingWindows);
+		}
+
+		if (mergingWindows != null) {
+			// need to make sure to update the merging state in state
+			mergingWindows.persist();
+		}
+```
