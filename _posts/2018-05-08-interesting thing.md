@@ -35,16 +35,16 @@
    }
   ```
 
-- 延伸：看 json 序列化，看到了 asm 的应用
+- 延伸：看 json 序列化，看到了 asm 的应用
 
-        [liangfei 的一篇动态代理方案的性能对比](http://javatar.iteye.com/blog/814426)
+        [liangfei 的一篇动态代理方案的性能对比](http://javatar.iteye.com/blog/814426)
 
-### 2. DataGrip 配置文件问题 
+### 2. DataGrip 配置文件问题 
 
-- 之前鼓捣过 datagrip 的主题，安装后发现太丑了，就删除了，然后悲剧发现  窗口边框黑了，看起来超变扭。
+- 之前鼓捣过 datagrip 的主题，安装后发现太丑了，就删除了，然后悲剧发现窗口边框黑了，看起来超变扭。
 - - 配置文件的目录:/Users/xuyongjian/Library/Preferences/DataGrip2018.1
 
-  - 之前  删除过一次 colors/，这个只是主题颜色的配置， 删除完 /options 后重启就恢复了，
+  - 之前  删除过一次 colors/，这个只是主题颜色的配置，删除完 /options 后重启就恢复了，
 
 ### 3. 新开的项目编译不通过
 
@@ -153,3 +153,11 @@ org.apache.tomcat.util.bcel.classfile.ClassFormatException: Invalid byte tag in 
 
 ### 8. java8 Collectors.toMap会npe
 - [so连接](https://stackoverflow.com/questions/24630963/java-8-nullpointerexception-in-collectors-tomap)
+
+
+
+
+### 时区的时间解析
+1. joda的DateTimeFormat.forPattern 时区只支持Z格式；+0800 +08:00的字符串输入都可以
+2. java本身 SimpleDateFormat/DateTimeFormatter 时区Z和XXX都支持；但字符串输入 Z:+0800, XXX:+08:00  有对应的格式要求
+3. 具体Z和XXX的区别，见SimpleDateFormat jdk的doc注释

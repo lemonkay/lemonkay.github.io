@@ -6,7 +6,6 @@
 ## 1. flink definition
 - Apache Flink is a framework and distributed processing engine for stateful computations over unbounded and bounded data streams. 
 
-- 
 
 ## 2. problems
 - AggregateFunction.merge(),是多个task的AverageAccumulator（per key and window） merge吗？
